@@ -106,7 +106,7 @@ dynamic decryptJSONFile(Uint8List data, Uint8List key) {
   final box = pinenacl.SecretBox(key);
 
   var decryptedBytes = box.decrypt(
-      data.sublist(
+      pinenacl.ByteList.fromList(data).sublist(
           ENCRYPTION_NONCE_LENGTH + ENCRYPTION_HIDDEN_FIELD_METADATA_LENGTH),
       nonce: nonce);
 
@@ -169,7 +169,7 @@ Uint8List encryptJSONFile(Map fullData, Uint8List key) {
   final box = pinenacl.SecretBox(key);
 
   // Encrypt the data.
-  final encryptedBytes = box.encrypt(data, nonce: nonce);
+  final encryptedBytes = box.encrypt(Uint8List.fromList(data), nonce: nonce);
 
   // Prepend the metadata.
   final metadata = EncryptedFileMetadata(version: _v);

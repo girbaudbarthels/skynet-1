@@ -15,8 +15,7 @@ dependencies:
   http_parser: ^4.0.0
   crypto: ^3.0.0
   web_socket_channel: ^2.0.0
-  pinenacl:
-    git: https://github.com/ilap/pinenacl-dart/tree/sealed-class-restriction
+  pinenacl: ^0.3.0
   mime: ^1.0.0
   password_hash:
     git: https://github.com/Derrick56007/dart-password-hash.git

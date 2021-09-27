@@ -50,9 +50,9 @@ class SkynetUser {
   }
 
   SkynetUser.fromSeedAsync(List<int> usedSeed) {
-    discoverableSeed = usedSeed;
+    discoverableSeed = Uint8List.fromList(usedSeed);
 
-    sk = pinenacl.PrivateKey(discoverableSeed);
+    sk = pinenacl.PrivateKey(Uint8List.fromList(usedSeed));
 
     pk = sk.publicKey;
   }
@@ -92,18 +92,18 @@ class SkynetUser {
   }
 
   List<int> symEncrypt(List<int> key, List<int> message) {
-    final box = pinenacl.SecretBox(key);
+    final box = pinenacl.SecretBox(Uint8List.fromList(key));
 
-    final encrypted = box.encrypt(message);
+    final encrypted = box.encrypt(Uint8List.fromList(message));
 
     return [...encrypted.nonce, ...encrypted.cipherText];
   }
 
   List<int> symDecrypt(List<int> key, List<int> encryptedMessage) {
-    final box = pinenacl.SecretBox(key);
+    final box = pinenacl.SecretBox(Uint8List.fromList(key));
 
     return box.decrypt(
-      encryptedMessage.sublist(24) as Uint8List,
+      Uint8List.fromList(encryptedMessage).sublist(24) as pinenacl.ByteList,
       nonce: encryptedMessage.sublist(0, 24) as Uint8List?,
     );
   }
@@ -123,10 +123,10 @@ class SkynetUser {
   List<int> encrypt(List<int> message, List<int> theirPublicKey) {
     final box = pinenacl.Box(
       myPrivateKey: sk,
-      theirPublicKey: pinenacl.PublicKey(theirPublicKey),
+      theirPublicKey: pinenacl.PublicKey(Uint8List.fromList(theirPublicKey)),
     );
 
-    final encrypted = box.encrypt(message);
+    final encrypted = box.encrypt(Uint8List.fromList(message));
 
     return [...encrypted.nonce, ...encrypted.cipherText];
   }
@@ -134,13 +134,13 @@ class SkynetUser {
   List<int> decrypt(List<int> encryptedMessage, List<int> theirPublicKey) {
     final box = pinenacl.Box(
       myPrivateKey: sk,
-      theirPublicKey: pinenacl.PublicKey(theirPublicKey),
+      theirPublicKey: pinenacl.PublicKey(Uint8List.fromList(theirPublicKey)),
     );
 
     final decrypted = box.decrypt(
       pinenacl.EncryptedMessage(
-        nonce: encryptedMessage.sublist(0, 24),
-        cipherText: encryptedMessage.sublist(24),
+        nonce: Uint8List.fromList(encryptedMessage).sublist(0, 24),
+        cipherText: Uint8List.fromList(encryptedMessage).sublist(24),
       ),
     );
 
